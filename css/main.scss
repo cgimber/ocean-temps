@@ -1,9 +1,17 @@
 /*! HTML5 Boilerplate v5.0 | MIT License | http://h5bp.com/ */
 
+@import "vendor/bourbon/bourbon";
 html {
     color: #222;
-    font-size: 1em;
-    line-height: 1.4;
+    font-size: 62.5%;
+    line-height: 1.5;
+}
+
+body {
+    margin: 0;
+    font-family: sans-serif;
+    font-size: 1.6rem;
+    font-weight: normal;
 }
 
 ::-moz-selection {
@@ -56,34 +64,57 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
+$calendar-width: calc(100vw - 100px);
+$date-width: calc(#{$calendar-width} / 7);
+$date-height: $date-width;
+body {
+    background: rgb(127, 127, 127);
+}
 
+.container {
+    padding: 0 5rem;
+}
 
+.calendar {
+    @include display(flex);
+    @include justify-content(center);
+    @include align-items(center);
+    @include flex-wrap(wrap);
+    width: $calendar-width;
+    background: white;
+}
 
-
-
-
-
-
-
-
-
-
+.calendar__day {
+    @include display(flex);
+    @include justify-content(center);
+    @include align-items(center);
+    @include flex-basis($date-width);
+    height: $date-height;
+}
 
 
 /* ==========================================================================
    Media Queries
    ========================================================================== */
 
-@media only screen and (min-width: 35em) {
-
+@media only screen and (max-width: 768px) {
+    .container {
+        padding: 0;
+    }
+    .calendar {
+        width: 100vw;
+    }
+    .calendar__day {
+        @include flex-basis(100%);
+        height: calc(100vh / 7);
+    }
 }
 
 @media print,
-       (-o-min-device-pixel-ratio: 5/4),
-       (-webkit-min-device-pixel-ratio: 1.25),
-       (min-resolution: 120dpi) {
+(-o-min-device-pixel-ratio: 5/4),
+(-webkit-min-device-pixel-ratio: 1.25),
+(min-resolution: 120dpi) {}
 
-}
 
 /* ==========================================================================
    Helper classes
@@ -133,6 +164,7 @@ textarea {
     *zoom: 1;
 }
 
+
 /* ==========================================================================
    Print styles
    ========================================================================== */
@@ -146,51 +178,41 @@ textarea {
         box-shadow: none !important;
         text-shadow: none !important;
     }
-
     a,
     a:visited {
         text-decoration: underline;
     }
-
     a[href]:after {
         content: " (" attr(href) ")";
     }
-
     abbr[title]:after {
         content: " (" attr(title) ")";
     }
-
     a[href^="#"]:after,
     a[href^="javascript:"]:after {
         content: "";
     }
-
     pre,
     blockquote {
         border: 1px solid #999;
         page-break-inside: avoid;
     }
-
     thead {
         display: table-header-group;
     }
-
     tr,
     img {
         page-break-inside: avoid;
     }
-
     img {
         max-width: 100% !important;
     }
-
     p,
     h2,
     h3 {
         orphans: 3;
         widows: 3;
     }
-
     h2,
     h3 {
         page-break-after: avoid;
