@@ -7,9 +7,10 @@ var data = [];
 ---------------------------------------------------------------------*/
 $(document).ready(function() {
 
-    var proxy = "https://crossorigin.me/";
-    var path = "http://tidesandcurrents.noaa.gov/api/datagetter?";
+    var proxy = "/proxy.php";
+    var url = "http://tidesandcurrents.noaa.gov/api/datagetter";
     var params = {
+        "csurl": url,
         "range": "72",
         "station": "9410230",
         "product": "water_temperature",
@@ -20,11 +21,7 @@ $(document).ready(function() {
         "format": "json"
     };
 
-    var url = proxy + path + $.param(params);
-
-    console.log(url);
-
-    $.get(url, function(response) {
+    $.get(proxy, params, function(response) {
             readings = $.parseJSON(response).data;
             console.log(readings);
 
