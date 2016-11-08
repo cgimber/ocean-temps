@@ -1,6 +1,7 @@
 /*
 TODOS
-    -show/hide date and values on day hover event
+    -format date (month) and values (F/C)
+    -fix orphan days
     -more granular view (e.g. just the readings for one day)
     -tweak mobile styling
     -station picker?
@@ -11,26 +12,27 @@ TODOS
 ---------------------------------------------------------------------*/
 var readings;
 var data = [];
-var CONSTANTS = { "max_temp": 75, "min_temp": 50 };
-CONSTANTS.range = Math.abs(CONSTANTS.max_temp - CONSTANTS.min_temp);
+
+var CONSTANTS = { "temp_max": 80, "temp_min": 55, "num_days": 365 };
+CONSTANTS.temp_range = Math.abs(CONSTANTS.temp_max - CONSTANTS.temp_min);
+
+var proxy = "/proxy.php";
+var url = "http://tidesandcurrents.noaa.gov/api/datagetter";
+var params = {
+    "csurl": url,
+    "range": (CONSTANTS.num_days - 2) * 24, // adjust for incomplete dates and convert to hours
+    "station": "9410230",
+    "product": "water_temperature",
+    "datum": "MLLW",
+    "units": "english",
+    "time_zone": "lst",
+    "application": "web_services",
+    "format": "json"
+};
 
 /* document ready
 ---------------------------------------------------------------------*/
 $(document).ready(function() {
-
-    var proxy = "/proxy.php";
-    var url = "http://tidesandcurrents.noaa.gov/api/datagetter";
-    var params = {
-        "csurl": url,
-        "range": "2016",
-        "station": "9410230",
-        "product": "water_temperature",
-        "datum": "MLLW",
-        "units": "english",
-        "time_zone": "lst",
-        "application": "web_services",
-        "format": "json"
-    };
 
     $.get(proxy, params, function(response) {
             readings = $.parseJSON(response).data;
@@ -52,14 +54,16 @@ $(document).ready(function() {
 
                     if (i == readings.length - 1) { // if this is the last reading,
                         // calc avg temp
-                        average = total / temps.length;
+                        average = Math.round(total / temps.length);
+                        if (isNaN(average)) average = "N/A";
 
                         // add to data
                         data.push({ date: currDate, temperature: average, readings: temps });
                     }
                 } else {
                     // calc avg temp
-                    average = total / temps.length;
+                    average = Math.round(total / temps.length);
+                    if (isNaN(average)) average = "N/A";
 
                     // add to data
                     data.push({ date: currDate, temperature: average, readings: temps });
@@ -82,6 +86,7 @@ $(document).ready(function() {
             console.log("done");
             console.log(data);
             updateHTML(data);
+            bindEvents();
         })
         .fail(function() {
             console.error("error");
@@ -99,11 +104,17 @@ function updateHTML(_data) {
     var days = "";
     for (var i = _data.length - 1; i >= 0; i--) {
         var date = "<div class='day__date'>" + formatDate(_data[i].date) + "</div>";
-        var value = "<div class='day__value'>" + Math.round(_data[i].temperature) + "&#176;</div>";
-        var day = "<div class='calendar__day' style='background:" + tempToRgba(_data[i].temperature, 0.75) + "'>" + value + "</div>";
+        var value = "<div class='day__value'>" + formatTemp(_data[i].temperature) + "</div>";
+        var day = "<div class='calendar__day' style='background:" + tempToRgba(_data[i].temperature, 0.75) + "'>" + date + value + "</div>";
         days += day;
     }
     $('.calendar').append(days);
+}
+
+function bindEvents() {
+    $('.calendar__day').hover(function() {
+        $(this).children().toggle();
+    });
 }
 
 function getDate(t) {
@@ -113,49 +124,32 @@ function getDate(t) {
 }
 
 function formatDate(d) {
-    var day = d.split('-')[1];
-    var month = d.split('-')[2];
     var year = d.split('-')[0];
-    return day + "-" + month + "-" + year;
+    var month = d.split('-')[1];
+    var day = d.split('-')[2];
+    return month + "-" + day + "-" + year;
+}
+
+function formatTemp(t) {
+    // concatenate units to valid temperatures
+    if (t == "N/A") return t;
+    else return t + "&#176;";
 }
 
 function tempToRgba(t, a) {
     var r, b, g;
-    if (Math.abs(CONSTANTS.max_temp - t) < Math.abs(CONSTANTS.min_temp - t)) { // hotter than avg
-        r = Math.round(map(Math.abs(CONSTANTS.max_temp - t), CONSTANTS.range / 2, 0, 0, 255));
+    if (Math.abs(CONSTANTS.temp_max - t) < Math.abs(CONSTANTS.temp_min - t)) { // hotter than avg
+        r = Math.round(map(Math.abs(CONSTANTS.temp_max - t), CONSTANTS.temp_range / 2, 0, 0, 255));
         b = 0;
         g = 255 - r;
     } else {
         r = 0;
-        b = Math.round(map(Math.abs(CONSTANTS.min_temp - t), CONSTANTS.range / 2, 0, 0, 255));
+        b = Math.round(map(Math.abs(CONSTANTS.temp_min - t), CONSTANTS.temp_range / 2, 0, 0, 255));
         g = 255 - b;
     }
     return "rgba(" + r + ", " + g + ", " + b + ", " + a + ")";
 }
 
-function tempToHex(t) {
-    var r, b, g;
-    if (Math.abs(CONSTANTS.max_temp - t) < Math.abs(CONSTANTS.min_temp - t)) { // hotter than avg
-        r = Math.round(map(Math.abs(CONSTANTS.max_temp - t), CONSTANTS.range / 2, 0, 0, 255));
-        b = 0;
-        g = 255 - r;
-    } else {
-        r = 0;
-        b = Math.round(map(Math.abs(CONSTANTS.min_temp - t), CONSTANTS.range / 2, 0, 0, 255));
-        g = 255 - b;
-    }
-    return rgbToHex(r, g, b);
-}
-
 function map(value, start1, stop1, start2, stop2) {
     return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
-}
-
-function rgbToHex(r, g, b) {
-    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
-}
-
-function componentToHex(c) {
-    var hex = c.toString(16);
-    return hex.length == 1 ? "0" + hex : hex;
 }

@@ -68,7 +68,7 @@ $calendar-width: calc(100vw - 100px);
 $date-width: calc(#{$calendar-width} / 7);
 $date-height: $date-width;
 body {
-    background: rgb(127, 127, 127);
+    background: white;
 }
 
 .container {
@@ -77,11 +77,10 @@ body {
 
 .calendar {
     @include display(flex);
-    @include justify-content(center);
+    @include justify-content(flex-start);
     @include align-items(center);
     @include flex-wrap(wrap);
     width: $calendar-width;
-    background: white;
 }
 
 .calendar__day {
@@ -90,6 +89,11 @@ body {
     @include align-items(center);
     @include flex-basis($date-width);
     height: $date-height;
+    color: rgba(0, 0, 0, 0.33);
+}
+
+.day__value {
+    display: none;
 }
 
 
