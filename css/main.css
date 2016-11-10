@@ -1,4 +1,7 @@
-/*! HTML5 Boilerplate v5.0 | MIT License | http://h5bp.com/ */
+@import url("https://fonts.googleapis.com/css?family=Rubik:300,400");
+/* ==========================================================================
+   HTML5 Boilerplate v5.0 | MIT License | http://h5bp.com/
+   ========================================================================== */
 html {
   color: #222;
   font-size: 62.5%;
@@ -6,7 +9,7 @@ html {
 
 body {
   margin: 0;
-  font-family: sans-serif;
+  font-family: 'Rubik', sans-serif;
   font-size: 1.6rem;
   font-weight: normal; }
 
@@ -54,9 +57,6 @@ textarea {
 body {
   background: white; }
 
-.container {
-  padding: 0 5rem; }
-
 .calendar {
   display: -webkit-box;
   display: -moz-box;
@@ -90,7 +90,7 @@ body {
   -moz-flex-wrap: wrap;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
-  width: calc(100vw - 100px); }
+  width: 100vw; }
 
 .calendar__day {
   display: -webkit-box;
@@ -118,22 +118,25 @@ body {
   -o-align-items: center;
   align-items: center;
   -ms-flex-align: center;
-  -webkit-flex-basis: calc(calc(100vw - 100px) / 7);
-  -moz-flex-basis: calc(calc(100vw - 100px) / 7);
-  flex-basis: calc(calc(100vw - 100px) / 7);
-  -ms-flex-preferred-size: calc(calc(100vw - 100px) / 7);
-  height: calc(calc(100vw - 100px) / 7);
+  -webkit-flex-basis: calc(100vw / 7);
+  -moz-flex-basis: calc(100vw / 7);
+  flex-basis: calc(100vw / 7);
+  -ms-flex-preferred-size: calc(100vw / 7);
+  height: calc(100vw / 7);
   color: rgba(0, 0, 0, 0.33); }
 
 .day__value {
-  display: none; }
+  display: none;
+  font-size: 2em;
+  font-weight: 300;
+  color: white; }
 
 /* ==========================================================================
    Media Queries
    ========================================================================== */
 @media only screen and (max-width: 768px) {
-  .container {
-    padding: 0; }
+  body {
+    font-size: 2em; }
 
   .calendar {
     width: 100vw; }
@@ -143,7 +146,13 @@ body {
     -moz-flex-basis: 100%;
     flex-basis: 100%;
     -ms-flex-preferred-size: 100%;
-    height: calc(100vh / 7); } }
+    height: calc(100vh / 7); }
+
+  .day__date br {
+    display: none; }
+
+  .day__value {
+    font-size: 1.5em; } }
 /* ==========================================================================
    Helper classes
    ========================================================================== */

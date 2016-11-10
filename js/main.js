@@ -1,7 +1,6 @@
 /*
 TODOS
-    -format date (month) and values (F/C)
-    -fix orphan days
+    -ajax loader
     -more granular view (e.g. just the readings for one day)
     -tweak mobile styling
     -station picker?
@@ -15,6 +14,7 @@ var data = [];
 
 var CONSTANTS = { "temp_max": 80, "temp_min": 55, "num_days": 365 };
 CONSTANTS.temp_range = Math.abs(CONSTANTS.temp_max - CONSTANTS.temp_min);
+var monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEPT", "OCT", "NOV", "DEC"];
 
 var proxy = "/proxy.php";
 var url = "http://tidesandcurrents.noaa.gov/api/datagetter";
@@ -38,13 +38,16 @@ $(document).ready(function() {
             readings = $.parseJSON(response).data;
             // console.log(readings);
 
-            var currDate = getDate(readings[0].t);
+            var currDate = new Date(readings[0].t).getDate();
             var total = 0;
             var temps = [];
             var average = 0;
 
             for (var i = 0; i < readings.length; i++) {
-                if (getDate(readings[i].t) == currDate) { // if this reading is for the current date,
+                // add a date object for this reading
+                readings[i].d = new Date(readings[i].t);
+
+                if ((readings[i].d.getDate()) == currDate) { // if this reading is for the current date,
                     // add this temperature to the running total and store this reading
                     var temp = parseFloat(readings[i].v);
                     if (!isNaN(temp)) {
@@ -58,7 +61,7 @@ $(document).ready(function() {
                         if (isNaN(average)) average = "N/A";
 
                         // add to data
-                        data.push({ date: currDate, temperature: average, readings: temps });
+                        data.push({ date: formatDate(readings[i].d), temperature: average, readings: temps });
                     }
                 } else {
                     // calc avg temp
@@ -66,10 +69,10 @@ $(document).ready(function() {
                     if (isNaN(average)) average = "N/A";
 
                     // add to data
-                    data.push({ date: currDate, temperature: average, readings: temps });
+                    data.push({ date: formatDate(readings[i - 1].d), temperature: average, readings: temps });
 
                     // move to the next date and clear old values
-                    currDate = getDate(readings[i].t);
+                    currDate = readings[i].d.getDate();
                     total = 0;
                     temps = [];
 
@@ -103,7 +106,7 @@ $(document).ready(function() {
 function updateHTML(_data) {
     var days = "";
     for (var i = _data.length - 1; i >= 0; i--) {
-        var date = "<div class='day__date'>" + formatDate(_data[i].date) + "</div>";
+        var date = "<div class='day__date'>" + _data[i].date + "</div>";
         var value = "<div class='day__value'>" + formatTemp(_data[i].temperature) + "</div>";
         var day = "<div class='calendar__day' style='background:" + tempToRgba(_data[i].temperature, 0.75) + "'>" + date + value + "</div>";
         days += day;
@@ -119,21 +122,26 @@ function bindEvents() {
 
 function getDate(t) {
     // return the date of timestamp t
-    // e.g. "2016-11-02"
-    return t.substr(0, 10);
+    // e.g. "2015-11-12 04:48" --> "12"
+    var d = new Date(t);
+    return d.getDate();
 }
 
 function formatDate(d) {
-    var year = d.split('-')[0];
-    var month = d.split('-')[1];
-    var day = d.split('-')[2];
-    return month + "-" + day + "-" + year;
+    // return a formatted version of the date object d
+    // e.g. "NOV 12 <br>2015"
+    return monthNames[d.getMonth()] + " " + d.getDate() + " <br>" + d.getFullYear();
 }
 
 function formatTemp(t) {
-    // concatenate units to valid temperatures
+    // concatenate unit(s) to valid temperature t
     if (t == "N/A") return t;
-    else return t + "&#176;";
+    else return t + "°";
+    // else return t + "°F / " + toCelsius(t) + "°C";
+}
+
+function toCelsius(f) {
+    return Math.round((5 / 9) * (f - 32));
 }
 
 function tempToRgba(t, a) {
