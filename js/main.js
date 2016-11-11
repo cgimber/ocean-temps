@@ -20,7 +20,7 @@ var proxy = "/proxy.php";
 var url = "http://tidesandcurrents.noaa.gov/api/datagetter";
 var params = {
     "csurl": url,
-    "range": (CONSTANTS.num_days - 2) * 24, // adjust for incomplete dates and convert to hours
+    "range": (CONSTANTS.num_days + 0.25) * 24, // adjust for gap years and convert to hours
     "station": "9410230",
     "product": "water_temperature",
     "datum": "MLLW",
@@ -105,6 +105,7 @@ $(document).ready(function() {
 
 function updateHTML(_data) {
     var days = "";
+    _data.length = CONSTANTS.num_days - (CONSTANTS.num_days % 7); // make sure each week has 7 days
     for (var i = _data.length - 1; i >= 0; i--) {
         var date = "<div class='day__date'>" + _data[i].date + "</div>";
         var value = "<div class='day__value'>" + formatTemp(_data[i].temperature) + "</div>";
