@@ -57,6 +57,9 @@ textarea {
 body {
   background: white; }
 
+.container {
+  overflow-x: hidden; }
+
 .calendar {
   display: -webkit-box;
   display: -moz-box;
