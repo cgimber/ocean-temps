@@ -12,8 +12,7 @@ TODOS
 var readings;
 var data = [];
 
-var CONSTANTS = { "temp_max": 80, "temp_min": 55, "num_days": 365 };
-CONSTANTS.temp_range = Math.abs(CONSTANTS.temp_max - CONSTANTS.temp_min);
+var CONSTANTS = { "num_days": 365 };
 var monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEPT", "OCT", "NOV", "DEC"];
 
 var proxy = "/proxy.php";
@@ -42,6 +41,11 @@ $(document).ready(function() {
             var total = 0;
             var temps = [];
             var average = 0;
+            var high, low, i = 0;
+            do { // set the high/low values to the first valid temp in readings
+                high = low = readings[i].v;
+                i++;
+            } while (isNaN(readings[i].v));
 
             for (var i = 0; i < readings.length; i++) {
                 // add a date object for this reading
@@ -59,6 +63,10 @@ $(document).ready(function() {
                         // calc avg temp
                         average = Math.round(total / temps.length);
                         if (isNaN(average)) average = "N/A";
+                        else { // check for a new high/low
+                            if (average > high) high = average;
+                            else if (average < low) low = average;
+                        }
 
                         // add to data
                         data.push({ date: formatDate(readings[i].d), temperature: average, readings: temps });
@@ -67,6 +75,10 @@ $(document).ready(function() {
                     // calc avg temp
                     average = Math.round(total / temps.length);
                     if (isNaN(average)) average = "N/A";
+                    else { // check for a new high/low
+                        if (average > high) high = average;
+                        else if (average < low) low = average;
+                    }
 
                     // add to data
                     data.push({ date: formatDate(readings[i - 1].d), temperature: average, readings: temps });
@@ -84,6 +96,10 @@ $(document).ready(function() {
                     }
                 }
             }
+            // add temp values to constants
+            CONSTANTS.temp_max = high + 3;
+            CONSTANTS.temp_min = low - 3;
+            CONSTANTS.temp_range = Math.abs(CONSTANTS.temp_max - CONSTANTS.temp_min);
         })
         .done(function() {
             console.log("done");
