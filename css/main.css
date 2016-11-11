@@ -51,12 +51,92 @@ textarea {
   color: #000;
   padding: 0.2em 0; }
 
+/* ajax loader
+----------------------------------------------------------------------------- */
+@-webkit-keyframes ripple {
+  0% {
+    width: 0;
+    height: 0;
+    border-width: 6px; }
+  33% {
+    width: 4rem;
+    height: 4rem;
+    opacity: 1; }
+  100% {
+    width: 8rem;
+    height: 8rem;
+    border-width: 1px;
+    opacity: 0; } }
+@-moz-keyframes ripple {
+  0% {
+    width: 0;
+    height: 0;
+    border-width: 6px; }
+  33% {
+    width: 4rem;
+    height: 4rem;
+    opacity: 1; }
+  100% {
+    width: 8rem;
+    height: 8rem;
+    border-width: 1px;
+    opacity: 0; } }
+@keyframes ripple {
+  0% {
+    width: 0;
+    height: 0;
+    border-width: 6px; }
+  33% {
+    width: 4rem;
+    height: 4rem;
+    opacity: 1; }
+  100% {
+    width: 8rem;
+    height: 8rem;
+    border-width: 1px;
+    opacity: 0; } }
+.loader {
+  display: -webkit-box;
+  display: -moz-box;
+  display: box;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -moz-box-pack: center;
+  box-pack: center;
+  -webkit-justify-content: center;
+  -moz-justify-content: center;
+  -ms-justify-content: center;
+  -o-justify-content: center;
+  justify-content: center;
+  -ms-flex-pack: center;
+  -webkit-box-align: center;
+  -moz-box-align: center;
+  box-align: center;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  -o-align-items: center;
+  align-items: center;
+  -ms-flex-align: center;
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 127, 255, 0.75);
+  z-index: 999; }
+
+.loader__ripple {
+  border-radius: 50%;
+  border: 10px solid #ffffff;
+  -webkit-animation: ripple 2s ease-out infinite;
+  -moz-animation: ripple 2s ease-out infinite;
+  animation: ripple 2s ease-out infinite; }
+
 /* ==========================================================================
    Author's custom styles
    ========================================================================== */
-body {
-  background: white; }
-
 .container {
   overflow-x: hidden; }
 

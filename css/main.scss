@@ -65,6 +65,46 @@ textarea {
 }
 
 
+/* ajax loader
+----------------------------------------------------------------------------- */
+
+@include keyframes(ripple) {
+    0% {
+        width: 0;
+        height: 0;
+        border-width: 6px;
+    }
+    33% {
+        width: 4rem;
+        height: 4rem;
+        opacity: 1;
+    }
+    100% {
+        width: 8rem;
+        height: 8rem;
+        border-width: 1px;
+        opacity: 0;
+    }
+}
+
+.loader {
+    @include display(flex);
+    @include justify-content(center);
+    @include align-items(center);
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 127, 255, 0.75);
+    z-index: 999;
+}
+
+.loader__ripple {
+    border-radius: 50%;
+    border: 10px solid #ffffff;
+    @include animation(ripple 2s ease-out infinite);
+}
+
+
 /* ==========================================================================
    Author's custom styles
    ========================================================================== */
@@ -72,10 +112,6 @@ textarea {
 $calendar-width: calc(100vw - 100px);
 $date-width: calc(#{$calendar-width} / 7);
 $date-height: $date-width;
-body {
-    background: white;
-}
-
 .container {
     // padding: 0 5rem;
     overflow-x: hidden;

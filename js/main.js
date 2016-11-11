@@ -1,6 +1,5 @@
 /*
 TODOS
-    -ajax loader
     -more granular view (e.g. just the readings for one day)
     -tweak mobile styling
     -station picker?
@@ -105,6 +104,7 @@ $(document).ready(function() {
             console.log("done");
             console.log(data);
             updateHTML(data);
+            $('.loader').fadeOut('slow');
             bindEvents();
         })
         .fail(function() {
