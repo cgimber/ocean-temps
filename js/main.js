@@ -1,8 +1,8 @@
 /*
 TODOS
-    -more granular view (e.g. just the readings for one day)
-    -tweak mobile styling
-    -station picker?
+    -station picker
+    -about modal
+    -more granular view (e.g. just the readings for one day)?
     -date/range picker?
 */
 
@@ -41,7 +41,7 @@ $(document).ready(function() {
             readings = $.parseJSON(response).data;
             // console.log(readings);
 
-            var currDate = new Date(readings[0].t).getDate();
+            var currDate = getDate(readings[0].t);
             var total = 0;
             var temps = [];
             var average = 0;
@@ -53,9 +53,9 @@ $(document).ready(function() {
 
             for (var i = 0; i < readings.length; i++) {
                 // add a date object for this reading
-                readings[i].d = new Date(readings[i].t);
+                readings[i].d = new Date(formatTimeStamp(readings[i].t));
 
-                if ((readings[i].d.getDate()) == currDate) { // if this reading is for the current date,
+                if ((readings[i].d.getDate()) === currDate) { // if this reading is for the current date,
                     // add this temperature to the running total and store this reading
                     var temp = parseFloat(readings[i].v);
                     if (!isNaN(temp)) {
@@ -63,7 +63,7 @@ $(document).ready(function() {
                         temps.push(readings[i]);
                     }
 
-                    if (i == readings.length - 1) { // if this is the last reading,
+                    if (i === readings.length - 1) { // if this is the last reading,
                         // calc avg temp
                         average = Math.round(total / temps.length);
                         if (isNaN(average)) average = "N/A";
@@ -142,10 +142,16 @@ function bindEvents() {
     });
 }
 
+function formatTimeStamp(t) {
+    // replace all dashes with slashes for proper parsing
+    // e.g. "2015-11-12 04:48" --> "2015/11/12 04:48"
+    return t.replace(/-/g, '/'); 
+}
+
 function getDate(t) {
     // return the date of timestamp t
     // e.g. "2015-11-12 04:48" --> "12"
-    var d = new Date(t);
+    var d = new Date(formatTimeStamp(t)); 
     return d.getDate();
 }
 
@@ -157,8 +163,8 @@ function formatDate(d) {
 
 function formatTemp(t) {
     // concatenate unit(s) to valid temperature t
-    if (t == "N/A") return t;
-    else return t + "°";
+    if (t === "N/A") return t;
+    else return t + "°F";
     // else return t + "°F / " + toCelsius(t) + "°C";
 }
 
