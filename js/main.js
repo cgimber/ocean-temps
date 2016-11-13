@@ -14,7 +14,12 @@ var data = [];
 var CONSTANTS = { "num_days": 365 };
 var monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEPT", "OCT", "NOV", "DEC"];
 
-var proxy = "/proxy.php";
+var proxy = "";
+var currURL = window.location.protocol + "//" + window.location.host + "/" + window.location.pathname;
+if (currURL.endsWith('/')) proxy = currURL + "proxy.php";
+else proxy = currURL.replace("index.html", "proxy.php");
+console.log("proxy: " + proxy);
+
 var url = "http://tidesandcurrents.noaa.gov/api/datagetter";
 var params = {
     "csurl": url,
