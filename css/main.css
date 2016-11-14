@@ -163,8 +163,36 @@ textarea {
    Author's custom styles
    ========================================================================== */
 header {
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  padding: 0.5em 0;
+  background: white;
   text-align: center;
-  padding: 0.5em 0; }
+  z-index: 10; }
+  header.animated {
+    will-change: transform;
+    -webkit-transition-property: -webkit-transform;
+    -moz-transition-property: -moz-transform;
+    transition-property: transform;
+    -webkit-transition-duration: 200ms;
+    -moz-transition-duration: 200ms;
+    transition-duration: 200ms;
+    -webkit-transition-timing-function: linear;
+    -moz-transition-timing-function: linear;
+    transition-timing-function: linear; }
+  header.slideDown {
+    -webkit-transform: translateY(0%);
+    -moz-transform: translateY(0%);
+    -ms-transform: translateY(0%);
+    -o-transform: translateY(0%);
+    transform: translateY(0%); }
+  header.slideUp {
+    -webkit-transform: translateY(-100%);
+    -moz-transform: translateY(-100%);
+    -ms-transform: translateY(-100%);
+    -o-transform: translateY(-100%);
+    transform: translateY(-100%); }
 
 .container {
   overflow-x: hidden; }

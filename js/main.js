@@ -37,6 +37,9 @@ var params = {
 ---------------------------------------------------------------------*/
 $(document).ready(function() {
 
+    // position container below header offset
+    $('.container').css("margin-top", $('header').outerHeight());
+
     $.get(proxy, params, function(response) {
             readings = $.parseJSON(response).data;
             // console.log(readings);
@@ -106,11 +109,11 @@ $(document).ready(function() {
             CONSTANTS.temp_range = Math.abs(CONSTANTS.temp_max - CONSTANTS.temp_min);
         })
         .done(function() {
-            console.log("done");
             console.log(data);
             updateHTML(data);
             $('.loader').fadeOut('slow');
             bindEvents();
+            console.log("done");
         })
         .fail(function() {
             console.error("error");
@@ -137,21 +140,33 @@ function updateHTML(_data) {
 }
 
 function bindEvents() {
+    $('header').headroom({
+        "offset": $('header').outerHeight(),
+        "tolerance": 5,
+        "classes": {
+            "initial": "animated",
+            "pinned": "slideDown",
+            "unpinned": "slideUp"
+        }
+    });
     $('.calendar__day').hover(function() {
         $(this).children().toggle();
+    });
+    $(window).resize(function() {
+        $('.container').css("margin-top", $('header').outerHeight());
     });
 }
 
 function formatTimeStamp(t) {
     // replace all dashes with slashes for proper parsing
     // e.g. "2015-11-12 04:48" --> "2015/11/12 04:48"
-    return t.replace(/-/g, '/'); 
+    return t.replace(/-/g, '/');
 }
 
 function getDate(t) {
     // return the date of timestamp t
     // e.g. "2015-11-12 04:48" --> "12"
-    var d = new Date(formatTimeStamp(t)); 
+    var d = new Date(formatTimeStamp(t));
     return d.getDate();
 }
 

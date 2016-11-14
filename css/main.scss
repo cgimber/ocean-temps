@@ -128,8 +128,28 @@ $date-width: calc(#{$calendar-width} / 7);
 $date-height: $date-width;
 
 header {
-    text-align: center;
+    position: fixed;
+    top: 0;
+    width: 100vw;
     padding: 0.5em 0;
+    background: white;
+    text-align: center;
+    z-index: 10;
+
+    &.animated {
+        will-change: transform;
+        @include transition-property(transform);
+        @include transition-duration(200ms);
+        @include transition-timing-function(linear);
+    }
+
+    &.slideDown {
+        @include transform(translateY(0%));
+    }
+
+    &.slideUp {
+        @include transform(translateY(-100%));
+    }
 }
 
 .container {
