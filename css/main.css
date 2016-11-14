@@ -95,6 +95,27 @@ textarea {
     height: 8rem;
     border-width: 1px;
     opacity: 0; } }
+@-webkit-keyframes temps {
+  0% {
+    background: rgba(0, 0, 255, 0.5); }
+  50% {
+    background: rgba(0, 255, 0, 0.5); }
+  100% {
+    background: rgba(255, 0, 0, 0.5); } }
+@-moz-keyframes temps {
+  0% {
+    background: rgba(0, 0, 255, 0.5); }
+  50% {
+    background: rgba(0, 255, 0, 0.5); }
+  100% {
+    background: rgba(255, 0, 0, 0.5); } }
+@keyframes temps {
+  0% {
+    background: rgba(0, 0, 255, 0.5); }
+  50% {
+    background: rgba(0, 255, 0, 0.5); }
+  100% {
+    background: rgba(255, 0, 0, 0.5); } }
 .loader {
   display: -webkit-box;
   display: -moz-box;
@@ -122,10 +143,14 @@ textarea {
   align-items: center;
   -ms-flex-align: center;
   position: absolute;
+  top: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 127, 255, 0.75);
-  z-index: 999; }
+  -webkit-animation: temps 5s ease-out infinite alternate;
+  -moz-animation: temps 5s ease-out infinite alternate;
+  animation: temps 5s ease-out infinite alternate;
+  z-index: 100;
+  pointer-events: none; }
 
 .loader__ripple {
   border-radius: 50%;

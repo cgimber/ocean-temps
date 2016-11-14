@@ -87,15 +87,29 @@ textarea {
     }
 }
 
+@include keyframes(temps) {
+    0% {
+        background: rgba(0, 0, 255, 0.5);
+    }
+    50% {
+        background: rgba(0, 255, 0, 0.5);
+    }
+    100% {
+        background: rgba(255, 0, 0, 0.5);
+    }
+}
+
 .loader {
     @include display(flex);
     @include justify-content(center);
     @include align-items(center);
     position: absolute;
+    top: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 127, 255, 0.75);
-    z-index: 999;
+    @include animation(temps 5s ease-out infinite alternate);
+    z-index: 100;
+    pointer-events: none;
 }
 
 .loader__ripple {
