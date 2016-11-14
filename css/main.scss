@@ -112,6 +112,12 @@ textarea {
 $calendar-width: calc(100vw - 100px);
 $date-width: calc(#{$calendar-width} / 7);
 $date-height: $date-width;
+
+header {
+    text-align: center;
+    padding: 0.5em 0;
+}
+
 .container {
     // padding: 0 5rem;
     overflow-x: hidden;
