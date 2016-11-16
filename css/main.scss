@@ -75,13 +75,13 @@ textarea {
         border-width: 6px;
     }
     33% {
-        width: 4rem;
-        height: 4rem;
+        width: 5rem;
+        height: 5rem;
         opacity: 1;
     }
     100% {
-        width: 8rem;
-        height: 8rem;
+        width: 10rem;
+        height: 10rem;
         border-width: 1px;
         opacity: 0;
     }
@@ -152,6 +152,11 @@ header {
     }
 }
 
+button {
+    // @include appearance(none);
+    height: 1.75em;
+}
+
 .container {
     // padding: 0 5rem;
     overflow-x: hidden;
@@ -183,6 +188,11 @@ header {
     font-size: 2em;
     font-weight: $light;
     color: white;
+}
+
+.day__value--none {
+    font-weight: normal;
+    color: rgba(0, 0, 0, 0.33);
 }
 
 

@@ -59,12 +59,12 @@ textarea {
     height: 0;
     border-width: 6px; }
   33% {
-    width: 4rem;
-    height: 4rem;
+    width: 5rem;
+    height: 5rem;
     opacity: 1; }
   100% {
-    width: 8rem;
-    height: 8rem;
+    width: 10rem;
+    height: 10rem;
     border-width: 1px;
     opacity: 0; } }
 @-moz-keyframes ripple {
@@ -73,12 +73,12 @@ textarea {
     height: 0;
     border-width: 6px; }
   33% {
-    width: 4rem;
-    height: 4rem;
+    width: 5rem;
+    height: 5rem;
     opacity: 1; }
   100% {
-    width: 8rem;
-    height: 8rem;
+    width: 10rem;
+    height: 10rem;
     border-width: 1px;
     opacity: 0; } }
 @keyframes ripple {
@@ -87,12 +87,12 @@ textarea {
     height: 0;
     border-width: 6px; }
   33% {
-    width: 4rem;
-    height: 4rem;
+    width: 5rem;
+    height: 5rem;
     opacity: 1; }
   100% {
-    width: 8rem;
-    height: 8rem;
+    width: 10rem;
+    height: 10rem;
     border-width: 1px;
     opacity: 0; } }
 @-webkit-keyframes temps {
@@ -194,6 +194,9 @@ header {
     -o-transform: translateY(-100%);
     transform: translateY(-100%); }
 
+button {
+  height: 1.75em; }
+
 .container {
   overflow-x: hidden; }
 
@@ -270,6 +273,10 @@ header {
   font-size: 2em;
   font-weight: 300;
   color: white; }
+
+.day__value--none {
+  font-weight: normal;
+  color: rgba(0, 0, 0, 0.33); }
 
 /* ==========================================================================
    Media Queries

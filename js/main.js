@@ -1,6 +1,5 @@
 /*
 TODOS
-    -station picker
     -about modal
     -more granular view (e.g. just the readings for one day)?
     -date/range picker?
@@ -8,17 +7,39 @@ TODOS
 
 /* globals
 ---------------------------------------------------------------------*/
-var readings;
-var data = [];
+var readings, data;
 
 var CONSTANTS = { "num_days": 365 };
 var monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEPT", "OCT", "NOV", "DEC"];
+var stations = {
+    "La Jolla, CA": "9410230",
+    "San Diego, CA": "9410170",
+    "Los Angeles, CA": "9410660",
+    "Santa Monica, CA": "9410840",
+    "Port San Luis, CA": "9412110",
+    "Monterey, CA": "9413450",
+    "San Francisco, CA": "9414290",
+    // "Point Reyes, CA": "9415020",
+    "Arena Cove, CA": "9416841",
+    // "North Spit, CA": "9418767",
+    // "Cresent City, CA": "9419750",
+    "Point Orford, OR": "9431647",
+    "Charleston, OR": "9432780",
+    "South Beach, OR": "9435380",
+    "Astoria, OR": "9439040",
+    // "Toke Point, WA": "9440910",
+    "Westport, WA": "9441102",
+    "La Push, WA": "9442396",
+    "Neah Bay, WA": "9443090",
+    "Port Angeles, WA": "9444090",
+    "Seattle, WA": "9447130"
+};
 
 var proxy = "";
 var currURL = window.location.protocol + "//" + window.location.host + "/" + window.location.pathname;
 if (currURL.endsWith('/')) proxy = currURL + "proxy.php";
 else proxy = currURL.replace("index.html", "proxy.php");
-console.log("proxy: " + proxy);
+// console.log("via " + proxy);
 
 var url = "http://tidesandcurrents.noaa.gov/api/datagetter";
 var params = {
@@ -40,21 +61,39 @@ $(document).ready(function() {
     // position container below header offset
     $('.container').css("margin-top", $('header').outerHeight());
 
+    populateStations();
+    bindEvents();
+    update();
+});
+
+/* functions
+---------------------------------------------------------------------*/
+function update() {
     $.get(proxy, params, function(response) {
             readings = $.parseJSON(response).data;
             // console.log(readings);
+            // params.format = "xml";
+            // console.log(url + "?" + $.param(params));
+            // params.format = "json";
 
+            data = [];
             var currDate = getDate(readings[0].t);
             var total = 0;
             var temps = [];
             var average = 0;
-            var high, low, i = 0;
-            do { // set the high/low values to the first valid temp in readings
-                high = low = readings[i].v;
-                i++;
-            } while (isNaN(readings[i].v));
+            var high, low;
+
+            // set the high/low values to the first valid temp in readings
+            for (var j = 0; j < readings.length; j++) {
+                var temp = parseFloat(readings[j].v);
+                if (!isNaN(temp)) {
+                    high = low = temp;
+                    break;
+                }
+            }
 
             for (var i = 0; i < readings.length; i++) {
+
                 // add a date object for this reading
                 readings[i].d = new Date(formatTimeStamp(readings[i].t));
 
@@ -78,7 +117,7 @@ $(document).ready(function() {
                         // add to data
                         data.push({ date: formatDate(readings[i].d), temperature: average, readings: temps });
                     }
-                } else {
+                } else { // this reading is for a new date
                     // calc avg temp
                     average = Math.round(total / temps.length);
                     if (isNaN(average)) average = "N/A";
@@ -102,18 +141,21 @@ $(document).ready(function() {
                         temps.push(readings[i]);
                     }
                 }
+
             }
             // add temp values to constants
             CONSTANTS.temp_max = high + 3;
             CONSTANTS.temp_min = low - 3;
             CONSTANTS.temp_range = Math.abs(CONSTANTS.temp_max - CONSTANTS.temp_min);
+            // station log
+            console.log(getKeyByValue(stations, params.station));
+            console.log(formatTemp(low) + " - " + formatTemp(high));
+            console.log(data.length + " days");
         })
         .done(function() {
             console.log(data);
             updateHTML(data);
             $('.loader').fadeOut('slow');
-            bindEvents();
-            console.log("done");
         })
         .fail(function() {
             console.error("error");
@@ -121,22 +163,29 @@ $(document).ready(function() {
         .always(function() {
             console.log("finished");
         });
+}
 
-});
-
-/* functions
----------------------------------------------------------------------*/
+function populateStations() {
+    $.each(stations, function(station, id) {
+        var option = "<option value=" + id + ">" + station + "</option>";
+        $('.stations').append(option);
+    });
+}
 
 function updateHTML(_data) {
-    var days = "";
-    _data.length = CONSTANTS.num_days - (CONSTANTS.num_days % 7); // make sure each week has 7 days
     for (var i = _data.length - 1; i >= 0; i--) {
         var date = "<div class='day__date'>" + _data[i].date + "</div>";
         var value = "<div class='day__value'>" + formatTemp(_data[i].temperature) + "</div>";
         var day = "<div class='calendar__day' style='background:" + tempToRgba(_data[i].temperature, 0.75) + "'>" + date + value + "</div>";
-        days += day;
+        $('.calendar').append(day);
     }
-    $('.calendar').append(days);
+    $('.day__value').addClass(function() {
+        if ($(this).text() === "N/A")
+            return "day__value--none";
+    });
+    $('.calendar__day').hover(function() {
+        $(this).children().toggle();
+    });
 }
 
 function bindEvents() {
@@ -149,11 +198,14 @@ function bindEvents() {
             "unpinned": "slideUp"
         }
     });
-    $('.calendar__day').hover(function() {
-        $(this).children().toggle();
-    });
     $(window).resize(function() {
         $('.container').css("margin-top", $('header').outerHeight());
+    });
+    $('.stations').change(function(event) {
+        $('.loader').show();
+        $('.calendar').html("");
+        params.station = $(this).val();
+        update();
     });
 }
 
@@ -203,4 +255,13 @@ function tempToRgba(t, a) {
 
 function map(value, start1, stop1, start2, stop2) {
     return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
+}
+
+function getKeyByValue(object, value) {
+    for (var key in object) {
+        if (object.hasOwnProperty(key)) {
+            if (object[key] === value)
+                return key;
+        }
+    }
 }
