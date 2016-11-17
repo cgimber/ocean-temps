@@ -211,13 +211,23 @@ button {
     }
     .calendar__day {
         @include flex-basis(100%);
+        @include justify-content(space-between);
         height: calc(100vh / 7);
+        padding: 0 1.5em;
+        pointer-events: none;
     }
     .day__date br {
         display: none;
     }
     .day__value {
+        display: block;
         font-size: 1.5em;
+        color: rgba(0, 0, 0, 0.33);
+    }
+    .day__value--none {
+        font-weight: $light;
+    }
+}
     }
 }
 
