@@ -20,7 +20,7 @@ var stations = {
     "Monterey, CA": "9413450",
     "San Francisco, CA": "9414290",
     // "Point Reyes, CA": "9415020",
-    "Arena Cove, CA": "9416841",
+    // "Arena Cove, CA": "9416841",
     // "North Spit, CA": "9418767",
     // "Cresent City, CA": "9419750",
     "Point Orford, OR": "9431647",
@@ -28,9 +28,9 @@ var stations = {
     "South Beach, OR": "9435380",
     "Astoria, OR": "9439040",
     // "Toke Point, WA": "9440910",
-    "Westport, WA": "9441102",
+    // "Westport, WA": "9441102",
     "La Push, WA": "9442396",
-    "Neah Bay, WA": "9443090",
+    // "Neah Bay, WA": "9443090",
     "Port Angeles, WA": "9444090",
     "Seattle, WA": "9447130"
 };
@@ -57,11 +57,7 @@ var params = {
 /* document ready
 ---------------------------------------------------------------------*/
 $(document).ready(function() {
-
-    // position container below header offset
-    $('.container').css("margin-top", $('header').outerHeight());
-
-    populateStations();
+    loadStations();
     bindEvents();
     update();
 });
@@ -150,11 +146,11 @@ function update() {
             // station log
             console.log(getKeyByValue(stations, params.station));
             console.log(formatTemp(low) + " - " + formatTemp(high));
-            console.log(data.length + " days");
+            console.log((data.length - 1) + " days");
         })
         .done(function() {
             console.log(data);
-            updateHTML(data);
+            updateCalendar(data);
             $('.loader').fadeOut('slow');
         })
         .fail(function() {
@@ -165,15 +161,17 @@ function update() {
         });
 }
 
-function populateStations() {
+function loadStations() {
     $.each(stations, function(station, id) {
         var option = "<option value=" + id + ">" + station + "</option>";
         $('.stations').append(option);
     });
+    $('.container').css("margin-top", $('header').outerHeight());
 }
 
-function updateHTML(_data) {
-    for (var i = _data.length - 1; i >= 0; i--) {
+function updateCalendar(_data) {
+    var numOrphans = _data.length % 7; // make sure each week has 7 days
+    for (var i = _data.length - 1; i >= numOrphans; i--) {
         var date = "<div class='day__date'>" + _data[i].date + "</div>";
         var value = "<div class='day__value'>" + formatTemp(_data[i].temperature) + "</div>";
         var day = "<div class='calendar__day' style='background:" + tempToRgba(_data[i].temperature, 0.75) + "'>" + date + value + "</div>";
