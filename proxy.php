@@ -38,7 +38,7 @@ define('CSAJAX_DEBUG', true);
  * A set of valid cross domain requests
  */
 $valid_requests = array(
-    'http://tidesandcurrents.noaa.gov/api/datagetter'
+    'https://tidesandcurrents.noaa.gov/api/datagetter'
 );
 
 /**

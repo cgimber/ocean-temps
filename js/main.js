@@ -41,11 +41,11 @@ if (currURL.endsWith('/')) proxy = currURL + "proxy.php";
 else proxy = currURL.replace("index.html", "proxy.php");
 // console.log("via " + proxy);
 
-var url = "http://tidesandcurrents.noaa.gov/api/datagetter";
+var url = "https://tidesandcurrents.noaa.gov/api/datagetter";
 var params = {
     "csurl": url,
     "range": (CONSTANTS.num_days + 0.25) * 24, // adjust for gap years and convert to hours
-    "station": "9410230",
+    "station": "9410660",
     "product": "water_temperature",
     "datum": "MLLW",
     "units": "english",
